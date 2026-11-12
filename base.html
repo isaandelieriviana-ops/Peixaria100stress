@@ -1,0 +1,19 @@
+
+<!doctype html><html lang="pt-br"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ settings.get('store_name','Peixaria 100 Stress') }}</title>
+<link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}"></head><body>
+<header class="top"><a class="brand" href="/"><img src="/static/img/logo.jpg"><span>100 <b>STRESS</b><small>PEIXARIA FAMILIAR</small></span></a>
+<nav><a href="/">Início</a><a href="/#produtos">Produtos</a><a href="/quiz">Encontre seu peixe</a><a href="/#contato">Contato</a><a class="cart-link" href="#carrinho">Carrinho <span id="cart-count">0</span></a></nav>
+</header>
+{% with messages=get_flashed_messages() %}{% if messages %}<div class="flash">{% for m in messages %}{{m}}{% endfor %}</div>{% endif %}{% endwith %}
+{% block content %}{% endblock %}
+<footer id="contato"><div><b>PEIXARIA 100 STRESS</b><p>{{settings.get('notice','Peixe bom, preço justo e praticidade sem estresse!')}}</p><p>Telefone/WhatsApp: {{settings.get('phone')}}</p><p>{{settings.get('address')}}</p><p>Atendimento: {{settings.get('hours')}}</p><p>Entregas: {{settings.get('delivery_area')}}</p></div><a href="/admin">Área administrativa</a></footer>
+<script>
+let cart=JSON.parse(localStorage.getItem('100stress-cart')||'[]');
+function saveCart(){localStorage.setItem('100stress-cart',JSON.stringify(cart));document.querySelectorAll('#cart-count').forEach(x=>x.textContent=cart.reduce((a,b)=>a+b.qty,0));renderCart();}
+function addCart(id,name,price,unit){let x=cart.find(p=>p.id===id);if(x)x.qty+=1;else cart.push({id,name,price,unit,qty:1});saveCart();alert(name+' adicionado ao carrinho!');}
+function renderCart(){let el=document.getElementById('cart-items');if(!el)return;el.innerHTML='';let total=0;cart.forEach((p,i)=>{let line=p.price*p.qty;total+=line;let d=document.createElement('div');d.className='cart-row';d.innerHTML=`<span>${p.name} — ${p.qty} ${p.unit}</span><b>R$ ${line.toFixed(2).replace('.',',')}</b><button onclick="removeCart(${i})">×</button>`;el.appendChild(d)});document.getElementById('cart-total').textContent='R$ '+total.toFixed(2).replace('.',',');}
+function removeCart(i){cart.splice(i,1);saveCart();}
+async function checkout(){if(!cart.length){alert('Adicione produtos ao carrinho.');return;}let f=document.getElementById('checkout-form');let data=Object.fromEntries(new FormData(f));data.items=JSON.stringify(cart);data.pickup=document.getElementById('pickup').checked?'true':'false';let r=await fetch('/pedido',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});let j=await r.json();if(j.ok){alert('Pedido nº '+j.order_id+' recebido! Total: R$ '+j.total.toFixed(2).replace('.',',')+'. A loja entrará em contato para confirmar disponibilidade e pagamento.');cart=[];saveCart();f.reset();}else alert(j.error||'Erro ao enviar pedido.');}
+saveCart();
+</script>{% block scripts %}{% endblock %}</body></html>

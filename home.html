@@ -1,0 +1,70 @@
+
+{% extends "base.html" %}{% block content %}
+<section class="hero hero-home">
+  <div class="hero-copy">
+    <span class="eyebrow"><span class="eyebrow-dot"></span> PEIXARIA DE FAMÍLIA</span>
+    <h1>Do mar e da água doce <em>para a sua mesa.</em></h1>
+    <p>Escolha seus peixes e frutos do mar com tranquilidade. A gente prepara sua encomenda com aquele atendimento próximo, de quem entende do assunto.</p>
+    <div class="hero-actions"><a class="btn" href="#produtos">Explorar produtos <span>→</span></a><a class="btn btn-ghost" href="/quiz">Ajude-me a escolher</a></div>
+    <div class="hero-proof"><span>✓ Encomendas práticas</span><span>✓ Atendimento familiar</span><span>✓ Entrega na região central</span></div>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-photo-wrap"><img src="/static/img/loja.jpg" alt="Fachada da Peixaria 100 Stress"></div>
+    <div class="floating-note"><span class="note-icon">🐟</span><div><b>Peixe bom, sem estresse</b><small>Escolha com a ajuda da nossa equipe</small></div></div>
+    <div class="hero-stamp">100<br><small>STRESS</small></div>
+  </div>
+  <div class="hero-wave"></div>
+</section>
+
+<section class="benefit-bar">
+  <div><span class="benefit-icon">🧊</span><span><b>Qualidade e cuidado</b><small>Consulte a disponibilidade do dia</small></span></div>
+  <div><span class="benefit-icon">🛍️</span><span><b>Encomende online</b><small>Escolha sem sair de casa</small></span></div>
+  <div><span class="benefit-icon">🚚</span><span><b>Entrega local</b><small>Região central e arredores</small></span></div>
+  <div><span class="benefit-icon">💬</span><span><b>Atendimento próximo</b><small>Estamos aqui para ajudar</small></span></div>
+</section>
+
+<section class="section category-section">
+  <div class="section-head"><div><span class="eyebrow">ENCONTRE O QUE PROCURA</span><h2>Um mar de possibilidades</h2><p>Explore nossas categorias e escolha o que vai para sua mesa.</p></div></div>
+  <div class="category-grid">
+    <a class="category-card cat-fish" href="#produtos"><span class="category-art">🐟</span><b>Peixes</b><small>Opções de água doce e salgada</small><span class="category-arrow">↗</span></a>
+    <a class="category-card cat-shrimp" href="#produtos"><span class="category-art">🦐</span><b>Camarões</b><small>Para receitas especiais</small><span class="category-arrow">↗</span></a>
+    <a class="category-card cat-shell" href="#produtos"><span class="category-art">🦪</span><b>Frutos do mar</b><small>Sabores para variar o cardápio</small><span class="category-arrow">↗</span></a>
+    <a class="category-card cat-market" href="#produtos"><span class="category-art">🛒</span><b>Mercadinho</b><small>Complete sua compra</small><span class="category-arrow">↗</span></a>
+  </div>
+</section>
+
+<section class="promo-feature">
+  <div class="promo-decoration">✳</div><div><span class="eyebrow eyebrow-light">BOM DE VERDADE É COMPRAR BEM</span><h2>Achou sua próxima<br>refeição especial.</h2><p>Confira os produtos disponíveis e fique de olho nas ofertas atualizadas pela peixaria.</p><a href="#produtos" class="btn btn-white">Ver catálogo completo →</a></div>
+  <div class="promo-illustration"><span>🐠</span><span>🦐</span><span>🍋</span></div>
+</section>
+
+<section class="section" id="produtos">
+  <div class="section-head"><div><span class="eyebrow">SELEÇÃO 100 STRESS</span><h2>Nosso catálogo</h2><p>Veja os produtos cadastrados pela equipe. Preços e disponibilidade podem mudar conforme o recebimento.</p></div><a href="/quiz" class="text-link">Não sabe o que escolher? →</a></div>
+  <div class="products">{% for p in products %}<article class="product">
+    <div class="product-img">{% if p.image %}<img src="{{p.image}}" alt="{{p.name}}">{% else %}<div class="fish-placeholder">{% if 'camar' in p.name|lower %}🦐{% elif 'lula' in p.name|lower or 'polvo' in p.name|lower %}🐙{% elif 'mex' in p.name|lower or 'ostra' in p.name|lower %}🦪{% else %}🐟{% endif %}</div>{% endif %}{% if p.promo_price %}<span class="sale">OFERTA ESPECIAL</span>{% endif %}<span class="product-category">{{p.category}}</span></div>
+    <div class="product-body"><h3>{{p.name}}</h3><p>{{p.description}}</p><div class="product-meta"><span>◉ {{p.water}}</span><span>✦ {{p.flavor}}</span></div><div class="price">{% if p.promo_price %}<del>R$ {{'%.2f'|format(p.price)}}</del> R$ {{'%.2f'|format(p.promo_price)}}{% else %}R$ {{'%.2f'|format(p.price)}}{% endif %}<small>/ {{p.unit}}</small></div><small class="stock">{% if p.stock>0 %}Consulte a quantidade disponível{% else %}Consulte disponibilidade{% endif %}</small><button class="btn full" onclick="addCart({{p.id}},{{p.name|tojson}},{{(p.promo_price or p.price)}},{{p.unit|tojson}})">Adicionar ao carrinho <span>+</span></button></div>
+  </article>{% else %}<div class="empty-catalog"><span>🐟</span><h3>Estamos preparando nosso catálogo</h3><p>Enquanto isso, fale com a equipe pelo WhatsApp.</p></div>{% endfor %}</div>
+</section>
+
+<section class="quiz-callout">
+  <div class="quiz-callout-art"><div class="quiz-circle">🐟</div><span class="bubble bubble-one"></span><span class="bubble bubble-two"></span><span class="bubble bubble-three"></span></div>
+  <div><span class="eyebrow">GUIA DE COMPRA 100 STRESS</span><h2>Qual peixe combina com seu paladar?</h2><p>Prefere sabor suave? Carne firme? Quer economizar? Responda ao nosso quiz e receba sugestões com base no catálogo.</p><a href="/quiz" class="btn">Descobrir meu peixe ideal →</a></div>
+</section>
+
+<section class="section story-section">
+  <div class="story-image"><img src="/static/img/loja.jpg" alt="Nossa peixaria"><span class="story-label">Tradição de família</span></div>
+  <div class="story-copy"><span class="eyebrow">PRAZER, SOMOS A 100 STRESS</span><h2>Atendimento de perto.<br>Compra sem complicação.</h2><p>Somos uma peixaria familiar e queremos deixar sua experiência mais simples: você escolhe, faz sua encomenda e combina a melhor forma de receber.</p><div class="story-points"><span>✓ Ajuda para escolher</span><span>✓ Informações claras</span><span>✓ Contato direto com a loja</span></div><a class="text-link" href="https://wa.me/{{settings.get('whatsapp','5551997078134')}}" target="_blank">Converse com a nossa equipe ↗</a></div>
+</section>
+
+<section class="section inspiration-section">
+  <div class="section-head"><div><span class="eyebrow">INSPIRAÇÃO PARA SUA COZINHA</span><h2>Ideias que abrem o apetite</h2><p>Algumas ideias para aproveitar melhor os produtos do catálogo.</p></div></div>
+  <div class="inspiration-grid">
+    <article class="inspiration-card"><div class="inspiration-emoji inspiration-one">🍋</div><div><small>DICA DE PREPARO</small><h3>Peixe no forno</h3><p>Combine ervas, limão e legumes para uma refeição prática.</p></div></article>
+    <article class="inspiration-card"><div class="inspiration-emoji inspiration-two">🍝</div><div><small>IDEIA PARA O ALMOÇO</small><h3>Massa com frutos do mar</h3><p>Uma opção para variar o cardápio e reunir a família.</p></div></article>
+    <article class="inspiration-card"><div class="inspiration-emoji inspiration-three">🧊</div><div><small>CUIDADO COM O PRODUTO</small><h3>Conservação</h3><p>Siga as orientações de refrigeração e descongelamento da embalagem e da equipe.</p></div></article>
+  </div>
+</section>
+
+<section class="section cart-section" id="carrinho"><div class="section-head"><div><span class="eyebrow">SÓ FALTA FINALIZAR</span><h2>Seu carrinho</h2><p>Confira os itens e envie sua encomenda para a equipe.</p></div></div><div class="checkout-grid"><div class="cart-box"><div id="cart-items"></div><div class="cart-total-line"><span>Total dos produtos</span><strong id="cart-total">R$ 0,00</strong></div><p class="muted">O frete será calculado conforme as regras cadastradas pela loja e confirmado pela equipe.</p></div><form id="checkout-form" onsubmit="event.preventDefault();checkout()"><h3>Seus dados</h3><label>Seu nome<input name="customer" required></label><label>WhatsApp<input name="phone" required placeholder="(xx) xxxxx-xxxx"></label><label>Endereço de entrega<input name="address" placeholder="Rua, número e bairro"></label><label class="check"><input type="checkbox" id="pickup"> Vou retirar na loja</label><label>Forma de pagamento<select name="payment"><option>Pix (confirmar com a loja)</option><option>Cartão na entrega/retirada</option><option>A combinar</option></select></label><label>Observações<textarea name="notes" placeholder="Preferência de corte, horário ou dúvidas..."></textarea></label><button class="btn full" type="submit">Enviar encomenda →</button><small class="form-note">O pedido será recebido para confirmação. O envio não confirma pagamento nem disponibilidade.</small></form></div></section>
+<a class="floating-whats" href="https://wa.me/{{settings.get('whatsapp','5551997078134')}}" target="_blank" aria-label="Fale pelo WhatsApp"><span>☏</span><b>Fale com a gente</b></a>
+{% endblock %}

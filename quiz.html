@@ -1,0 +1,19 @@
+
+{% extends "base.html" %}{% block content %}
+<section class="quiz-hero"><span class="eyebrow eyebrow-light">GUIA DE COMPRA 100 STRESS</span><h1>Vamos encontrar seu peixe ideal?</h1><p>Conte um pouquinho do que você gosta. A gente cruza suas preferências com os produtos disponíveis no catálogo.</p><div class="quiz-hero-icons">🐟　🦐　🦪　🍋</div></section>
+<section class="section quiz-page"><div class="quiz-layout"><div class="quiz-intro"><span class="eyebrow">ESCOLHA COM CONFIANÇA</span><h2>Seu gosto é o nosso ponto de partida.</h2><p>Não existe resposta certa. O quiz é um guia para facilitar a escolha e apresentar alternativas.</p><div class="quiz-tip"><b>Uma dica:</b><br>Se tiver dúvidas sobre espinhas, corte, peso ou preparo, nossa equipe pode orientar pelo WhatsApp.</div></div>
+<div class="quiz-card">
+<label>1. Qual é sua faixa de preço por kg?</label><select id="budget"><option value="0">Sem limite definido</option><option value="30">Até R$ 30</option><option value="50">Até R$ 50</option><option value="80">Até R$ 80</option></select>
+<label>2. Prefere peixe de água doce ou salgada?</label><select id="water"><option>Tanto faz</option><option>Água doce</option><option>Água salgada</option></select>
+<label>3. Qual sabor prefere?</label><select id="flavor"><option>Tanto faz</option><option>Suave</option><option>Intermediário</option><option>Marcante</option></select>
+<label>4. Qual textura agrada mais?</label><select id="texture"><option>Tanto faz</option><option>Firme</option><option>Macia</option><option>Delicada</option></select>
+<label>5. E as espinhas?</label><select id="bones"><option>Tanto faz</option><option>Prefiro sem espinhas</option></select>
+<button class="btn full" onclick="recommend()">Ver minhas sugestões →</button>
+</div></div><div id="results" class="products quiz-results"></div><p class="muted">As sugestões usam as características cadastradas para cada produto. Elas não substituem a confirmação de espécie, corte, procedência e disponibilidade com a peixaria.</p></section>
+{% endblock %}
+{% block scripts %}<script>
+const catalog=[{% for p in products %}{id:{{p.id}},name:{{p.name|tojson}},category:{{p.category|tojson}},description:{{p.description|tojson}},price:{{p.promo_price or p.price}},unit:{{p.unit|tojson}},water:{{p.water|tojson}},flavor:{{p.flavor|tojson}},texture:{{p.texture|tojson}},bones:{{p.bones|tojson}},image:{{p.image|tojson}}},{% endfor %}];
+function recommend(){let b=+document.getElementById('budget').value,w=document.getElementById('water').value,f=document.getElementById('flavor').value,t=document.getElementById('texture').value,n=document.getElementById('bones').value;
+let ranked=catalog.map(p=>{let score=0;if(!b||p.price<=b)score+=3;if(w==='Tanto faz'||p.water===w)score+=2;if(f==='Tanto faz'||p.flavor===f)score+=2;if(t==='Tanto faz'||p.texture===t)score+=2;if(n==='Tanto faz'||(n==='Prefiro sem espinhas'&&p.bones.toLowerCase().includes('sem')))score+=2;return {...p,score}}).sort((a,b)=>b.score-a.score).slice(0,5);
+document.getElementById('results').innerHTML=ranked.map(p=>`<article class="product"><div class="product-img">${p.image?`<img src="${p.image}">`:'<div class="fish-placeholder">🐟</div>'}</div><div class="product-body"><small>${p.category}</small><h3>${p.name}</h3><p>${p.description}</p><div class="price">R$ ${p.price.toFixed(2).replace('.',',')} / ${p.unit}</div><button class="btn full" onclick='addCart(${p.id},${JSON.stringify(p.name)},${p.price},${JSON.stringify(p.unit)})'>Adicionar ao carrinho +</button></div></article>`).join('')||'<p>Nenhum produto disponível no catálogo.</p>';document.getElementById('results').scrollIntoView({behavior:'smooth'});}
+</script>{% endblock %}

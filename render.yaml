@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: peixaria-100-stress
+    runtime: python
+    plan: starter
+    region: ohio
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT app:app
+    healthCheckPath: /
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_PATH
+        value: /var/data/100stress.db
+    disk:
+      name: peixaria-data
+      mountPath: /var/data
+      sizeGB: 1

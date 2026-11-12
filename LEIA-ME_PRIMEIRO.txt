@@ -1,0 +1,103 @@
+
+PEIXARIA 100 STRESS — VERSÃO VISUAL + PUBLICAÇÃO NO RENDER
+==========================================================
+
+O projeto contém:
+- Site público responsivo para celular e computador.
+- Identidade visual azul-marinho, azul-claro, branco e areia.
+- Logo e fotografia da peixaria enviadas pela família.
+- Página inicial com apresentação, categorias, catálogo, chamada para promoções,
+  quiz, dicas de preparo/conservação e carrinho.
+- Quiz que recomenda itens com base no catálogo e nas preferências selecionadas.
+- Encomenda online gravada no banco de dados.
+- Painel administrativo com login.
+- Cadastro, edição, ativação e exclusão de produtos.
+- Preço promocional, estoque e imagens por URL.
+- Registro de venda presencial e despesas.
+- Gestão de pedidos e status.
+- Configurações de telefone, WhatsApp, endereço, horários e frete.
+- Banco SQLite persistido em /var/data no Render por meio de disco persistente.
+
+PARTE 1 — TESTAR NO SEU COMPUTADOR (WINDOWS)
+--------------------------------------------
+1. Extraia o ZIP.
+2. Instale Python 3.10 ou superior, se ainda não tiver.
+3. Dê dois cliques em INICIAR_100_STRESS.bat.
+4. Abra http://127.0.0.1:5000 no navegador.
+
+Acesso administrativo inicial:
+- URL: http://127.0.0.1:5000/admin
+- Usuário: admin
+- Senha: admin123
+
+IMPORTANTE: altere a senha no primeiro acesso, em Configurações da loja.
+Não envie a senha inicial a terceiros.
+
+PARTE 2 — PUBLICAR NO RENDER
+----------------------------
+O arquivo render.yaml já contém a configuração sugerida para o Render.
+
+1. Crie uma conta em https://github.com/
+2. No GitHub, crie um repositório chamado peixaria-100-stress.
+   Pode ser privado.
+3. Envie TODOS os arquivos e pastas que estão dentro desta pasta do projeto
+   para o repositório. Não envie a pasta .venv nem o arquivo 100stress.db.
+4. Crie uma conta em https://render.com/
+5. No Render, escolha New > Blueprint.
+6. Conecte sua conta GitHub e selecione o repositório peixaria-100-stress.
+7. O Render vai ler o arquivo render.yaml. Revise as configurações e confirme
+   a criação do serviço.
+8. Aguarde o build e o deploy. Quando aparecer Live, abra a URL onrender.com
+   fornecida pelo Render.
+9. Acesse /admin e altere imediatamente a senha inicial.
+10. Em Configurações da loja, corrija telefone, WhatsApp, endereço, horários,
+    regiões, regras de frete e mensagem de destaque.
+11. Edite os produtos de exemplo, preços, unidades, estoque e imagens.
+
+PUBLICAÇÃO E PERSISTÊNCIA
+-------------------------
+O Blueprint está configurado com um serviço web Starter e um disco persistente
+de 1 GB montado em /var/data. Isso é intencional: o banco SQLite guarda produtos,
+pedidos, despesas e configurações nesse disco. A configuração com disco persistente
+não é uma hospedagem gratuita. Confira os preços atuais do Render antes de confirmar.
+Não altere nem remova o disco após começar a receber pedidos, pois ele contém os dados.
+
+Documentação oficial:
+- Deploy Flask: https://render.com/docs/deploy-flask
+- Blueprints: https://render.com/docs/blueprint-spec
+- Discos persistentes: https://render.com/docs/disks
+
+O QUE AINDA PRECISA SER CONFIGURADO ANTES DE VENDER
+---------------------------------------------------
+1. Pagamento online real: o formulário atual registra a encomenda e a preferência
+   de pagamento, mas não cobra Pix/cartão. É necessária integração com gateway,
+   credenciais privadas e confirmação de pagamento por webhook.
+2. Peso variável: produtos vendidos por kg podem exigir confirmação do peso final
+   antes da cobrança. Ajuste o fluxo comercial para a operação real da loja.
+3. Frete: a regra atual é simplificada. Ela considera retirada, taxa padrão e
+   gratuidade acima do valor mínimo; não calcula CEP/bairro automaticamente.
+4. Estoque: pedido online não baixa nem reserva estoque automaticamente. A equipe
+   deve confirmar disponibilidade. Venda presencial registrada baixa o estoque.
+5. Segurança: antes de abrir ao público, troque a senha inicial, mantenha a chave
+   SECRET_KEY gerada pelo Render, use HTTPS e limite o acesso administrativo.
+6. Dados e privacidade: publicar política de privacidade, termos, regras de troca,
+   cancelamento e tratamento de dados dos clientes.
+7. Fiscal e contábil: o painel é gerencial e não substitui emissão fiscal,
+   escrituração ou orientação do contador.
+8. Produtos e preços: os produtos e valores que vêm cadastrados são exemplos.
+   Revise tudo antes de divulgar o site.
+9. Imagens: a logo e a foto da fachada foram incluídas. Imagens de produtos podem
+   ser cadastradas por URL no painel. Use fotos próprias e autorizadas.
+10. Informação alimentar: revise procedência, conservação, rotulagem e alegações
+    nutricionais com fontes confiáveis antes de publicar.
+
+BACKUP
+------
+Faça cópias periódicas do banco de dados. No Render, o arquivo fica em
+/var/data/100stress.db dentro do disco persistente. Antes de qualquer manutenção,
+faça backup. O ZIP não contém dados reais de clientes ou vendas.
+
+SOBRE A DEMONSTRAÇÃO
+--------------------
+A interface visual está enriquecida, mas as fotos de produto, valores, promoções,
+horários e endereço devem ser substituídos pelos dados reais da Peixaria 100 Stress.
